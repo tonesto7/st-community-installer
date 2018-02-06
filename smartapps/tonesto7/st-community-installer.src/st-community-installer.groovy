@@ -91,7 +91,7 @@ def installStartHtml() {
             </head>
             <body>
                 <div id="bodyDiv"></div>
-                <script type="text/javascript" src="${baseUrl('/content/js/app_main.js')}"></script>
+                <script type="text/javascript" src="${baseUrl('/content/js/app_main.js')}${randVerStr}"></script>
             </body>
         </html>"""
     render contentType: "text/html", data: html
