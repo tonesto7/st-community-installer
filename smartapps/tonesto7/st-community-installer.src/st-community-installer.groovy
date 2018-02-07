@@ -12,9 +12,9 @@ definition(
     description		: "The Community Devices/SmartApp Installer",
     category		: "My Apps",
     singleInstance	: true,
-    iconUrl			: "https://community-installer-34dac.firebaseapp.com/content/images/app_logo.png",
-    iconX2Url		: "https://community-installer-34dac.firebaseapp.com/content/images/app_logo.png",
-    iconX3Url		: "https://community-installer-34dac.firebaseapp.com/content/images/app_logo.png")
+    iconUrl			: "${baseUrl("/content/images/app_logo.png")}",
+    iconX2Url		: "${baseUrl("/content/images/app_logo.png")}",
+    iconX3Url		: "${baseUrl("/content/images/app_logo.png")}")
 /**********************************************************************************************************************************************/
 private releaseVer() { return "5.0.0207" }
 private appVerDate() { "2-07-2018" }
