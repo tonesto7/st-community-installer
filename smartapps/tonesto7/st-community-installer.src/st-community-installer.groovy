@@ -16,8 +16,8 @@ definition(
     iconX2Url		: "https://community-installer-34dac.firebaseapp.com/content/images/app_logo.png",
     iconX3Url		: "https://community-installer-34dac.firebaseapp.com/content/images/app_logo.png")
 /**********************************************************************************************************************************************/
-private releaseVer() { return "5.0.0206" }
-private appVerDate() { "2-06-2018" }
+private releaseVer() { return "5.0.0207" }
+private appVerDate() { "2-07-2018" }
 /**********************************************************************************************************************************************/
 preferences {
     page name: "startPage"
@@ -56,7 +56,7 @@ def mainPage() {
         }
         section("") {
             paragraph title: "What now?", "Tap on the input below to launch the Installer Web App and signin to the IDE"
-            href "", title: "Tap Here to Get Started", url: getLoginUrl(), style: "embedded", required: false, description: "", image: ""
+            href "", title: "Installer Home", url: getLoginUrl(), style: "embedded", required: false, description: "", image: ""
         }
     }
 }
