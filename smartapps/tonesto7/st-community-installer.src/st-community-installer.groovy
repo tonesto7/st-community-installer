@@ -16,8 +16,8 @@ definition(
     iconX2Url		: "${baseUrl("/content/images/app_logo.png")}",
     iconX3Url		: "${baseUrl("/content/images/app_logo.png")}")
 /**********************************************************************************************************************************************/
-private releaseVer() { return "5.0.0207" }
-private appVerDate() { "2-07-2018" }
+private releaseVer() { return "5.0.0213" }
+private appVerDate() { "2-13-2018" }
 /**********************************************************************************************************************************************/
 preferences {
     page name: "startPage"
@@ -66,10 +66,10 @@ def baseUrl(path) {
 }
 
 def getLoginUrl() {
-    def theURL = "https://account.smartthings.com?redirect=${getAppEndpointUrl("installStart")}"
-    //if(settings?.authAcctType == "samsung") { theURL = "https://account.smartthings.com/login/samsungaccount?redirect=${getAppEndpointUrl("installStart")}" }
+    def r = URLEncoder.encode(getAppEndpointUrl("installStart"))
+    def theURL = "https://account.smartthings.com/login?redirect=${r}"
+    if(settings?.authAcctType == "samsung") { theURL = "https://account.smartthings.com/login/samsungaccount?redirect=${r}" }
     return theURL
-}
 
 def installStartHtml() {
     def randVerStr = "?=${now()}"
