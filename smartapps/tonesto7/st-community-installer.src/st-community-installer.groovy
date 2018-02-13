@@ -9,14 +9,14 @@ definition(
     name			: "ST-Community-Installer",
     namespace		: "tonesto7",
     author			: "tonesto7",
-    description		: "The Community Devices/SmartApp Installer",
+    description		: "The Community SmartApp/Devices Installer",
     category		: "My Apps",
     singleInstance	: true,
-    iconUrl			: "${baseUrl("/content/images/app_logo.png")}",
-    iconX2Url		: "${baseUrl("/content/images/app_logo.png")}",
-    iconX3Url		: "${baseUrl("/content/images/app_logo.png")}")
+    iconUrl			: "${getAppImg("app_logo.png")}",
+    iconX2Url		: "${getAppImg("app_logo.png")}",
+    iconX3Url		: "${getAppImg("app_logo.png")}")
 /**********************************************************************************************************************************************/
-private releaseVer() { return "1.0.0213" }
+private releaseVer() { return "1.0.0213a" }
 private appVerDate() { "2-13-2018" }
 /**********************************************************************************************************************************************/
 preferences {
@@ -48,15 +48,28 @@ def startPage() {
 def mainPage() {
     dynamicPage (name: "mainPage", title: "", install: true, uninstall: true) {
         section("") { image getAppImg("welcome.png") }
-        section("") {
-            if(!authAcctType) {
-                paragraph title: "This helps to determine the login server you are sent to!", optDesc
+        section("Login Options:") {
+            if(!settings?.authAcctType) {
+                paragraph title: "This helps to determine the login server you are sent to!", ""
             }
-            input "authAcctType", "enum", title: "IDE Login Account Type", multiple: false, required: true, submitOnChange: true, metadata: [values:["samsung":"Samsung", "st":"SmartThings"]], image: getAppImg("${settings?.authAcctType}_icon.png")
+            input "authAcctType", "enum", title: "IDE Login Account Type", multiple: false, required: true, submitOnChange: true, options: ["samsung":"Samsung", "st":"SmartThings"], image: getAppImg("${settings?.authAcctType}_icon.png")
+        }
+        def hideBrowDesc = (atomicState?.isInstalled == true && ["embedded", "external"].contains(settings?.browserType))
+        section("Browser Type Description:", hideable: hideBrowDesc, hidden: hideBrowDesc) {
+            def embstr = "It's the most secure as the session is wiped everytime you close the view. So it will require logging in everytime you leave the view and isn't always friendly with Password managers (iOS)"
+            paragraph title: "Embedded (Recommended)", embstr
+            def extstr = "Will open the page outside the SmartThings app in your default browser. It will maintain your SmartThings until you logout. It will not force you to login everytime you leave the page and should be compatible with most Password managers. You can bookmark the Page for quick access."
+            paragraph title: "External", extstr
+        }
+        section("Browser Option:") {
+            input "browserType", "enum", title: "Browser Type", required: true, defaultValue: "embedded", submitOnChange: true, options: ["embedded":"Embedded", "external":"Mobile Browser"], image: ""
         }
         section("") {
-            paragraph title: "What now?", "Tap on the input below to launch the Installer Web App and signin to the IDE"
-            href "", title: "Installer Home", url: getLoginUrl(), style: "embedded", required: false, description: "", image: ""
+            if(settings?.browserType) {
+                href "", title: "Installer Home", url: getLoginUrl(), style: (settings?.browserType == "external" ? "external" : "embedded"), required: false, description: "Tap Here to load the Installer Web App", image: getAppImg("go_img.png")
+            } else {
+                paragraph title: "Browser Type Missing", "Please Select a browser type to proceed", required: true, state: null
+            }
         }
     }
 }
@@ -84,6 +97,7 @@ def installStartHtml() {
                 <script type="text/javascript">
                     const serverUrl = '${apiServerUrl('')}';
                     const homeUrl = '${getAppEndpointUrl('installStart')}';
+                    const loginUrl = '${getLoginUrl()}'
                     const baseAppUrl = '${baseUrl('')}';
                     const appVersion = '${releaseVer()}';
                     const appVerDate = '${appVerDate()}';
@@ -142,7 +156,8 @@ def getAccessToken() {
     }
 }
 
-def getAppImg(file)	    { return "${baseUrl("/content/images/$file")}" }
-def getAppVideo(file)	{ return "${baseUrl("/content/videos/$file")}" }
+def gitBranch()         { return "master" }
+def getAppImg(file)	    { return "https://cdn.rawgit.com/tonesto7/st-community-installer/${gitBranch()}/images/$file" }
+def getAppVideo(file)	{ return "https://cdn.rawgit.com/tonesto7/st-community-installer/${gitBranch()}/videos/$file" }
 def getAppEndpointUrl(subPath)	{ return "${apiServerUrl("/api/smartapps/installations/${app.id}${subPath ? "/${subPath}" : ""}?access_token=${atomicState.accessToken}")}" }
 
