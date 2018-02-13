@@ -70,6 +70,7 @@ def getLoginUrl() {
     def theURL = "https://account.smartthings.com/login?redirect=${r}"
     if(settings?.authAcctType == "samsung") { theURL = "https://account.smartthings.com/login/samsungaccount?redirect=${r}" }
     return theURL
+}
 
 def installStartHtml() {
     def randVerStr = "?=${now()}"
