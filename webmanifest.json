@@ -3,7 +3,7 @@
   "short_name": "Community Installer",
   "theme_color": "#2196f3",
   "background_color": "#485158",
-  "display": "fullscreen",
+  "display": "standalone",
   "Scope": "/",
   "start_url": "/",
   "icons": [
@@ -48,5 +48,5 @@
       "type": "image/png"
     }
   ],
-  "splash_pages": null
+  "splash_pages": "/?utm_source=homescreen"
 }
