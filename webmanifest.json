@@ -5,7 +5,7 @@
   "background_color": "#485158",
   "display": "standalone",
   "Scope": "/",
-  "start_url": "/?utm_source=homescreen",
+  "start_url": "/",
   "icons": [
     {
       "src": "https://cdn.rawgit.com/tonesto7/st-community-installer/master/images/icons/icon-72x72.png",
