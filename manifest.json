@@ -1,11 +1,11 @@
 {
   "name": "Community Install",
   "short_name": "Community Installer",
-  "theme_color": "#2196f3",
-  "background_color": "#485158",
+  "theme_color": "#2b3134",
+  "background_color": "#2b3134",
   "display": "standalone",
   "Scope": "/",
-  "start_url": "/?utm_source=homescreen",
+  "start_url": "/",
   "icons": [
     {
       "src": "https://cdn.rawgit.com/tonesto7/st-community-installer/master/images/icons/icon-72x72.png",
