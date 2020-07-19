@@ -1,6 +1,6 @@
 /*
 *   Communtity App Installer
-*   Copyright 2018 Anthony Santilli, Corey Lista
+*   Copyright 2018, 2019, 2020 Anthony Santilli, Corey Lista
 *
 // /**********************************************************************************************************************************************/
 import java.security.MessageDigest
@@ -15,9 +15,12 @@ definition(
     iconUrl			: "${getAppImg("app_logo.png")}",
     iconX2Url		: "${getAppImg("app_logo.png")}",
     iconX3Url		: "${getAppImg("app_logo.png")}")
+{
+    appSetting "devMode"
+}
 /**********************************************************************************************************************************************/
-private releaseVer() { return "1.0.0213a" }
-private appVerDate() { "2-13-2018" }
+private releaseVer() { return "1.1.0311a" }
+private appVerDate() { "3-11-2020" }
 /**********************************************************************************************************************************************/
 preferences {
     page name: "startPage"
@@ -66,7 +69,8 @@ def mainPage() {
         }
         section("") {
             if(settings?.browserType) {
-                href "", title: "Installer Home", url: getLoginUrl(), style: (settings?.browserType == "external" ? "external" : "embedded"), required: false, description: "Tap Here to load the Installer Web App", image: getAppImg("go_img.png")
+                // href "", title: "Installer Home", url: getLoginUrl(), style: (settings?.browserType == "external" ? "external" : "embedded"), required: false, description: "Tap Here to load the Installer Web App", image: getAppImg("go_img.png")
+                href "", title: "Installer Home", url: getLoginUrl(), style: (settings?.browserType == "external" ? "external" : "embedded"), required: false, description: "Tap Here to launch the Installer Web App and Signin to the IDE", image: getAppImg("go_img.png")
             } else {
                 paragraph title: "Browser Type Missing", "Please Select a browser type to proceed", required: true, state: null
             }
@@ -93,23 +97,30 @@ def installStartHtml() {
                 <meta name="robots" content="noindex">
                 <link rel="stylesheet" type="text/css" href="${baseUrl('/content/css/main_mdb.min.css')}" />
                 <link rel="stylesheet" type="text/css" href="${baseUrl('/content/css/main_web.min.css')}" />
-                <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+                <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
                 <script type="text/javascript">
-                    const serverUrl = '${apiServerUrl('')}';
-                    const homeUrl = '${getAppEndpointUrl('installStart')}';
-                    const loginUrl = '${getLoginUrl()}'
-                    const baseAppUrl = '${baseUrl('')}';
-                    const appVersion = '${releaseVer()}';
-                    const appVerDate = '${appVerDate()}';
-                    const hashedUuid = '${generateLocationHash()}';
+                    const serverUrl     = '${apiServerUrl('')}';
+                    const homeUrl       = '${getAppEndpointUrl('installStart')}';
+                    const loginUrl      = '${getLoginUrl()}'
+                    const baseAppUrl    = '${baseUrl('')}';
+                    const appVersion    = '${releaseVer()}';
+                    const appVerDate    = '${appVerDate()}';
+                    const hashedUuid    = '${generateLocationHash()}';
+                    const devMode       = '${isDev()}';
                 </script>
             </head>
             <body>
                 <div id="bodyDiv"></div>
-                <script type="text/javascript" src="${baseUrl('/content/js/awesome_file.js')}${randVerStr}"></script>
+                ${getScript()}
             </body>
         </html>"""
     render contentType: "text/html", data: html
+}
+
+def isDev() { (appSettings?.devMode == true) }
+def getScript() {
+	def randVerStr = "?=${now()}"
+    return isDev() ? """<script type="text/javascript" src="${baseUrl('/content/js/ignore_me.js')}"></script>""" : """<script type="text/javascript" src="${baseUrl('/content/js/awesome_file.js')}${randVerStr}"></script>"""
 }
 
 def installed() {
@@ -140,7 +151,7 @@ def generateLocationHash() {
     def s = location?.getId()
     MessageDigest digest = MessageDigest.getInstance("MD5")
     digest.update(s.bytes);
-    new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0') 
+    new BigInteger(1, digest.digest()).toString(16).padLeft(32, '0')
 }
 
 def getAccessToken() {
@@ -157,7 +168,7 @@ def getAccessToken() {
 }
 
 def gitBranch()         { return "master" }
-def getAppImg(file)	    { return "https://cdn.rawgit.com/tonesto7/st-community-installer/${gitBranch()}/images/$file" }
-def getAppVideo(file)	{ return "https://cdn.rawgit.com/tonesto7/st-community-installer/${gitBranch()}/videos/$file" }
+def getAppImg(file)	    { return "https://raw.githubusercontent.com/tonesto7/st-community-installer/${gitBranch()}/images/$file" }
+def getAppVideo(file)	{ return "https://raw.githubusercontent.com/tonesto7/st-community-installer/${gitBranch()}/videos/$file" }
 def getAppEndpointUrl(subPath)	{ return "${apiServerUrl("/api/smartapps/installations/${app.id}${subPath ? "/${subPath}" : ""}?access_token=${atomicState.accessToken}")}" }
 
